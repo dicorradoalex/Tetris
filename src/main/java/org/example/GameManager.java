@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.models.LeftS;
 import org.example.models.Piece;
 import org.example.models.Square;
 
@@ -140,7 +141,7 @@ public class GameManager {
         currentPiece = pieces.remove(0);
 
 
-        currentPiece = new Square(); // 2. Qua assegno 'qualcosa' a dropNewPiece
+        currentPiece = new LeftS(); // 2. Qua assegno 'qualcosa' a dropNewPiece
 
         boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa funzione
         //    perché se restiuisce false, allora restituisce null

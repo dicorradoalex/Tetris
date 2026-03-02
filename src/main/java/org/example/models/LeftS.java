@@ -29,7 +29,7 @@ public class LeftS extends Piece {
 
     @Override
     public boolean canMoveDown() {
-        if (pivotX + 2 <= GameManager.getInstance().getPlayground().length) {
+        if (pivotX + 2 < GameManager.getInstance().getPlayground().length) {
             switch (rotationStatus) {
                 case DEFAULT:
                     return isEmptyTile(pivotX + 1, pivotY - 1)
@@ -135,8 +135,8 @@ public class LeftS extends Piece {
 
     @Override
     public void dropIntoPlayground() {
-        pivotX=0;
-        pivotY=4;
+        this.pivotX=0;
+        this.pivotY=4;
         setTileLeftS();
     }
 
@@ -147,11 +147,13 @@ public class LeftS extends Piece {
                 setTileEmpty(pivotX, pivotY);
                 setTileEmpty(pivotX + 1, pivotY);
                 setTileEmpty(pivotX + 1, pivotY + 1);
+                break;
             case UPWARD:
                 setTileEmpty(pivotX - 1, pivotY);
                 setTileEmpty(pivotX, pivotY);
                 setTileEmpty(pivotX, pivotY - 1);
                 setTileEmpty(pivotX + 1, pivotY - 1);
+                break;
         }
     }
 
@@ -162,11 +164,13 @@ public class LeftS extends Piece {
                 setTilePiece(pivotX, pivotY);
                 setTilePiece(pivotX + 1, pivotY);
                 setTilePiece(pivotX + 1, pivotY + 1);
+                break;
             case UPWARD:
                 setTilePiece(pivotX - 1, pivotY);
                 setTilePiece(pivotX, pivotY);
                 setTilePiece(pivotX, pivotY - 1);
                 setTilePiece(pivotX + 1, pivotY - 1);
+                break;
         }
     }
 
@@ -177,11 +181,13 @@ public class LeftS extends Piece {
                 setTileFull(pivotX, pivotY);
                 setTileFull(pivotX + 1, pivotY);
                 setTileFull(pivotX + 1, pivotY + 1);
+                break;
             case UPWARD:
                 setTileFull(pivotX - 1, pivotY);
                 setTileFull(pivotX, pivotY);
                 setTileFull(pivotX, pivotY - 1);
                 setTileFull(pivotX + 1, pivotY - 1);
+                break;
         }
     }
 
