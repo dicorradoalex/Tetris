@@ -102,9 +102,33 @@ public class LeftS extends Piece{
 
     }
     public void clearTileLeftS(){
-
+        switch (rotationStatus){
+            case DEFAULT:
+                setTileEmpty(pivotX,pivotY-1);
+                setTileEmpty(pivotX,pivotY);
+                setTileEmpty(pivotX+1,pivotY);
+                setTileEmpty(pivotX+1,pivotY+1);
+            case UPWARD:
+                setTileEmpty(pivotX-1,pivotY);
+                setTileEmpty(pivotX,pivotY);
+                setTileEmpty(pivotX,pivotY-1);
+                setTileEmpty(pivotX+1,pivotY-1);
+        }
     }
-    public void setTileLeftS(){}
+    public void setTileLeftS(){
+        switch (rotationStatus){
+            case DEFAULT:
+                setTilePiece(pivotX,pivotY-1);
+                setTilePiece(pivotX,pivotY);
+                setTilePiece(pivotX+1,pivotY);
+                setTilePiece(pivotX+1,pivotY+1);
+            case UPWARD:
+                setTilePiece(pivotX-1,pivotY);
+                setTilePiece(pivotX,pivotY);
+                setTilePiece(pivotX,pivotY-1);
+                setTilePiece(pivotX+1,pivotY-1);
+        }
+    }
     public void settleTileLeftS(){}
     public boolean isEmptyTile(int pivotX, int pivotY){return GameManager.getInstance().getPlayground()[pivotX][pivotY]==GameManager.CELLA_VUOTA;}
     private void setTileFull(int pivotX, int pivotY){
