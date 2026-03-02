@@ -1,7 +1,7 @@
 package org.example.models;
 
 public abstract class Piece {
-    
+
     int pivotX;
     int pivotY;
     int rotationStatus;
@@ -15,14 +15,21 @@ public abstract class Piece {
 
 
     // --- valutare se quando un pezzo è già al margine sx/dx del playground se vogliamo farlo ruotare consendento uno spostamento laterale
-    public abstract boolean canRotate(); 
-    public abstract boolean canMoveDown(); 
-    public abstract boolean canMoveSx(); 
-    public abstract boolean canMoveDx(); 
-    public abstract void rotate(); 
-    public abstract void moveDown(); 
-    public abstract void moveSx(); 
-    public abstract void moveDx(); 
+    public abstract boolean canRotate();
+
+    public abstract boolean canMoveDown();
+
+    public abstract boolean canMoveSx();
+
+    public abstract boolean canMoveDx();
+
+    public abstract void rotate();
+
+    public abstract void moveDown();
+
+    public abstract void moveSx();
+
+    public abstract void moveDx();
 
     //  collision detection
     //  - con il background bloccato tentanto di andare in basso, a dx, a sx o ruotando
@@ -33,6 +40,7 @@ public abstract class Piece {
 
     //  --- se non si può, il player ha perso
     public abstract boolean canDropIntoPlayground();
+
     //  --- setta il pivot ad una x/y coerente rispetto al tipo e posizione standard pivot
     //  --- in modo che sia più in alto possibile nel playground
     public abstract void dropIntoPlayground();

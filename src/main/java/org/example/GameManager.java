@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class GameManager {
-    
+
     static char[][] playground = new char[20][10];
     //  valore interno alla cella avrà un significato specifico
     //  - ' ' => cella vuota, un pezzo può sostare su questa cella
@@ -19,9 +19,9 @@ public class GameManager {
 
 
     // Attributi
-    public static  final  char CELLA_VUOTA = '_';
-    public static  final  char CELLA_PIENA = '#';
-    public static  final  char CELLA_PEZZO = '@';
+    public static final char CELLA_VUOTA = '_';
+    public static final char CELLA_PIENA = '#';
+    public static final char CELLA_PEZZO = '@';
 
     // forse inutile la lista di pezzi
     List<Piece> pieces;
@@ -34,7 +34,7 @@ public class GameManager {
 
     // Punto di accesso all'istanza del
     public static GameManager getInstance() {
-        if(GameManager.INSTANCE == null) {
+        if (GameManager.INSTANCE == null) {
             GameManager.INSTANCE = new GameManager();
         }
         return GameManager.INSTANCE;
@@ -68,7 +68,7 @@ public class GameManager {
     public void initPlayground() {
         // REFACTORING
         for (char[] row : playground)
-            Arrays.fill(row,CELLA_VUOTA);
+            Arrays.fill(row, CELLA_VUOTA);
     }
 
     public char[][] getPlayground() {
@@ -78,7 +78,7 @@ public class GameManager {
     public void printPlayground() {
         //TODO
         System.out.println("PLAYGROUND: ");
-        String riga= "";
+        String riga = "";
         for (int i = 0; i < playground.length; i++) {
             for (int j = 0; j < playground[i].length; j++) {
                 char c = playground[i][j];
@@ -142,12 +142,11 @@ public class GameManager {
 
         currentPiece = new Square(); // 2. Qua assegno 'qualcosa' a dropNewPiece
 
-       boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa funzione
-                                                                             //    perché se restiuisce false, allora restituisce null
-                                                                             //    e il valore di ritorno di questa funzione viene assegnato a currentPiece nella funzione
-                                                                             //    moveCurrentPieceDownForTimeExpiry() dopo l'else
-        if (!isCanDropInPlayground)
-        {
+        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa funzione
+        //    perché se restiuisce false, allora restituisce null
+        //    e il valore di ritorno di questa funzione viene assegnato a currentPiece nella funzione
+        //    moveCurrentPieceDownForTimeExpiry() dopo l'else
+        if (!isCanDropInPlayground) {
             return null; // qua restituisce null -> sospetto
         }
         currentPiece.dropIntoPlayground(); // -> vado a vedere che succede qua -> ok droppa il pezzo
@@ -156,12 +155,12 @@ public class GameManager {
     }
 
     // 1. Produce il "bug"
-        public void moveCurrentPieceDownForTimeExpiry() {
-        if(currentPiece == null){
+    public void moveCurrentPieceDownForTimeExpiry() {
+        if (currentPiece == null) {
             System.out.println("ERRORE: currentPiece è null"); // viene stampato in loop dalla console, perché? devo capire perché currentPiece è null
             return;                                            // dove viene inizializzato currentPiece? in dropNewPiece
         }
-        if(currentPiece.canMoveDown()) {
+        if (currentPiece.canMoveDown()) {
             currentPiece.moveDown();
         } else {
             currentPiece.freeze();
@@ -171,7 +170,6 @@ public class GameManager {
         }
         printPlayground();
     }
-
 
 
     public void moveCurrentPieceDown() {
@@ -247,19 +245,19 @@ public class GameManager {
     }
 
     public void moveCurrentPieceDx() {
-        if(currentPiece.canMoveDx()) {
+        if (currentPiece.canMoveDx()) {
             currentPiece.moveDx();
         }
     }
 
     public void moveCurrentPieceSx() {
-        if(currentPiece.canMoveSx()) {
+        if (currentPiece.canMoveSx()) {
             currentPiece.moveSx();
         }
     }
 
     public void rotateCurrentPiece() {
-        if(currentPiece.canRotate()) {
+        if (currentPiece.canRotate()) {
             currentPiece.rotate();
             // TODO nice-to-have ogni volta che un utente ruota un oggetto, il thread-timer che stampa "riparte"
             try {
@@ -269,7 +267,6 @@ public class GameManager {
             }
         }
     }
-
 
 
 }

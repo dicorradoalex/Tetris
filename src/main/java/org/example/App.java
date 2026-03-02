@@ -4,11 +4,10 @@ package org.example;
  * Hello world!
  *
  */
-public class App 
-{
+public class App {
     /**
      * REQUIREMENTS - TETRIS GAME
-     *
+     * <p>
      * Classe astratta pezzo (Piece.java) -> polimorfismo per tutti i pezzi specifici
      * - stato di rotazione
      * - pivot (x,y) => punto di rotazione
@@ -28,7 +27,7 @@ public class App
      * --- in modo che sia più in alto possibile nel playground
      * - canDropIntoPlayground()
      * --- se non si può, il player ha perso
-     *
+     * <p>
      * Classe Madre Abstract "Piece"
      * - Square
      * - LeftS
@@ -37,7 +36,7 @@ public class App
      * - RightL
      * - HalfCross
      * - Bar
-     *
+     * <p>
      * playground
      * - la stampiano sulla console
      * - rettangolo alto 20 caselle e largo 10 caselle
@@ -46,10 +45,10 @@ public class App
      * --- ' ' => cella vuota, un pezzo può sostare su questa cella
      * --- '#' => cella piena di "background" (pezzi bloccati), un pezzo non può sostare qui, collide
      * --- '@' => cella che indica un "pezzo" del Piece che sta scendendo (oggetto che il player sta gestendo)
-     *
+     * <p>
      * stack dei pezzi che man mano scenderanno (List<Piece>)
      * - generazione randomica => genRandomListOfPieces()
-     *
+     * <p>
      * evaluateCleanRows()
      * logica di eliminazione di una riga "full" e quindi incremento punteggio
      * - ogni volta che un pezzo si integra al fondale dobbiamo controllare se c'è una riga piena
@@ -59,7 +58,7 @@ public class App
      * --- 3 righe => 9 punti
      * --- 4 righe => 16 punti
      * - tolte le righe piene, fare "scendere" il background in alto per occupare il posto delle righe liberate
-     *
+     * <p>
      * Timer
      * - ritmo di gioco incrementale man mano poggi pezzi sul fondale
      * - livello si incrementa => velocità di discesa si incrementa
@@ -82,30 +81,30 @@ public class App
      * --- il pezzo può bloccarsi sullo sfondo
      * --- riparte il drop di un nuovo pezzo
      * --- eventualmente ad una certa il player perde
-     *
+     * <p>
      * dropNewPiece()
      * - prende un pezzo dallo stack (se non ce n'è più, l'utente ha vinto)
      * - lo inserisce in un punto specifico in alto nel playground
      * --- invoco il metodo "canDropIntoPlayground()" del Piece
      * ----- se non può, il player ha perso
      * ----- se può, invoco il metodo "dropIntoPlayground()" del Piece
-     *
+     * <p>
      * WIN Conditions
      * - ho posizionato tutti gli oggetti
-     *
+     * <p>
      * LOSE Conditions
      * - non posso più droppare oggetti
-     *
+     * <p>
      * PRINT GAMEBOARD
-     *
+     * <p>
      * READ PLAYER COMMANDS -> multi-threading
      * --- thread che legge da console
      * --- thread che stampa (ogni volta che il timer scade)
      * --- thread che ri-stampa (ogni volta che l'utente muove un pezzo)
      * --- ogni volta che un utente ruota un oggetto, il thread che stampa "riparte"
-     *
+     * <p>
      * SALVATAGGIO PUNTI / RECORDS (persistenza)  aaaaaaaa
-     *
+     * <p>
      * Architettura MVC aaaaaa
      * - model: i vari Piece, Factory per forme dei pezzi, dati utente, records, playground
      * - controller: la gestione dei pezzi (movimenti, rotazione, creazione, gestione livelli), timer

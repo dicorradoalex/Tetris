@@ -36,7 +36,6 @@ public class Square extends Piece {
     }
 
 
-
     @Override
     public boolean canMoveSx() {
         return false;
@@ -59,17 +58,17 @@ public class Square extends Piece {
 
         // rimuovi @
         GameManager.getInstance().getPlayground()[pivotX][pivotY] = GameManager.CELLA_VUOTA;
-        GameManager.getInstance().getPlayground()[pivotX][pivotY+1] = GameManager.CELLA_VUOTA;
-        GameManager.getInstance().getPlayground()[pivotX+1][pivotY] = GameManager.CELLA_VUOTA;
-        GameManager.getInstance().getPlayground()[pivotX+1][pivotY+1] = GameManager.CELLA_VUOTA;
+        GameManager.getInstance().getPlayground()[pivotX][pivotY + 1] = GameManager.CELLA_VUOTA;
+        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY] = GameManager.CELLA_VUOTA;
+        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY + 1] = GameManager.CELLA_VUOTA;
 
         this.pivotX++;
 
         // aggiorna @
         GameManager.getInstance().getPlayground()[pivotX][pivotY] = GameManager.CELLA_PEZZO;
-        GameManager.getInstance().getPlayground()[pivotX][pivotY+1] = GameManager.CELLA_PEZZO;
-        GameManager.getInstance().getPlayground()[pivotX+1][pivotY] = GameManager.CELLA_PEZZO;
-        GameManager.getInstance().getPlayground()[pivotX+1][pivotY+1] = GameManager.CELLA_PEZZO;
+        GameManager.getInstance().getPlayground()[pivotX][pivotY + 1] = GameManager.CELLA_PEZZO;
+        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY] = GameManager.CELLA_PEZZO;
+        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY + 1] = GameManager.CELLA_PEZZO;
     }
 
     @Override
@@ -88,16 +87,16 @@ public class Square extends Piece {
 
         // Sostituisco le celle del pezzo (CELLA_PEZZO) con le celle di background (CELLA_PIENA)
         playground[pivotX][pivotY] = GameManager.CELLA_PIENA;
-        playground[pivotX][pivotY+1] = GameManager.CELLA_PIENA;
-        playground[pivotX+1][pivotY] = GameManager.CELLA_PIENA;
-        playground[pivotX+1][pivotY+1] = GameManager.CELLA_PIENA;
+        playground[pivotX][pivotY + 1] = GameManager.CELLA_PIENA;
+        playground[pivotX + 1][pivotY] = GameManager.CELLA_PIENA;
+        playground[pivotX + 1][pivotY + 1] = GameManager.CELLA_PIENA;
     }
 
     // Verifica se posso droppare
     @Override
     public boolean canDropIntoPlayground() {
         char playground[][] = GameManager.getInstance().getPlayground();
-        if ( ((playground[0][4] == GameManager.CELLA_VUOTA) && (playground[0][5] == GameManager.CELLA_VUOTA)) &&
+        if (((playground[0][4] == GameManager.CELLA_VUOTA) && (playground[0][5] == GameManager.CELLA_VUOTA)) &&
                 ((playground[1][4] == GameManager.CELLA_VUOTA) && (playground[1][5] == GameManager.CELLA_VUOTA))) {
             return true; // dovrebbe restituire true
         }
@@ -114,8 +113,8 @@ public class Square extends Piece {
         // posiziono il pezzo all'inizio del playground
         char[][] playground = GameManager.getInstance().getPlayground();
         playground[pivotX][pivotY] = GameManager.CELLA_PEZZO;
-        playground[pivotX][pivotY+1] = GameManager.CELLA_PEZZO;
-        playground[pivotX+1][pivotY] = GameManager.CELLA_PEZZO;
-        playground[pivotX+1][pivotY+1] = GameManager.CELLA_PEZZO;
+        playground[pivotX][pivotY + 1] = GameManager.CELLA_PEZZO;
+        playground[pivotX + 1][pivotY] = GameManager.CELLA_PEZZO;
+        playground[pivotX + 1][pivotY + 1] = GameManager.CELLA_PEZZO;
     }
 }
