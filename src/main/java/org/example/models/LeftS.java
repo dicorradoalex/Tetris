@@ -29,31 +29,39 @@ public class LeftS extends Piece {
 
     @Override
     public boolean canMoveDown() {
-        switch (rotationStatus) {
-            case DEFAULT:
-                return isEmptyTile(pivotX + 1, pivotY - 1)
-                        && isEmptyTile(pivotX + 2, pivotY)
-                        && isEmptyTile(pivotX + 2, pivotY + 1);
-            case UPWARD:
-                return isEmptyTile(pivotX + 1, pivotY)
-                        && isEmptyTile(pivotX + 2, pivotY - 1);
-            default:
-                return false;
+        if (pivotX + 2 <= GameManager.getInstance().getPlayground().length) {
+            switch (rotationStatus) {
+                case DEFAULT:
+                    return isEmptyTile(pivotX + 1, pivotY - 1)
+                            && isEmptyTile(pivotX + 2, pivotY)
+                            && isEmptyTile(pivotX + 2, pivotY + 1);
+                case UPWARD:
+                    return isEmptyTile(pivotX + 1, pivotY)
+                            && isEmptyTile(pivotX + 2, pivotY - 1);
+                default:
+                    return false;
+            }
+        } else {
+            return false;
         }
     }
 
     @Override
     public boolean canMoveSx() {
-        switch (rotationStatus) {
-            case DEFAULT:
-                return isEmptyTile(pivotX, pivotY - 2)
-                        && isEmptyTile(pivotX + 1, pivotY - 1);
-            case UPWARD:
-                return isEmptyTile(pivotX - 1, pivotY - 1)
-                        && isEmptyTile(pivotX, pivotY - 2)
-                        && isEmptyTile(pivotX + 1, pivotY - 2);
-            default:
-                return false;
+        if (pivotY - 2 >= 0) {
+            switch (rotationStatus) {
+                case DEFAULT:
+                    return isEmptyTile(pivotX, pivotY - 2)
+                            && isEmptyTile(pivotX + 1, pivotY - 1);
+                case UPWARD:
+                    return isEmptyTile(pivotX - 1, pivotY - 1)
+                            && isEmptyTile(pivotX, pivotY - 2)
+                            && isEmptyTile(pivotX + 1, pivotY - 2);
+                default:
+                    return false;
+            }
+        } else {
+            return false;
         }
     }
 
@@ -61,12 +69,20 @@ public class LeftS extends Piece {
     public boolean canMoveDx() {
         switch (rotationStatus) {
             case DEFAULT:
-                return isEmptyTile(pivotX, pivotY + 1)
-                        && isEmptyTile(pivotX + 1, pivotY + 2);
+                if (pivotY + 2 >= GameManager.getInstance().getPlayground()[0].length) {
+                    return false;
+                } else {
+                    return isEmptyTile(pivotX, pivotY + 1)
+                            && isEmptyTile(pivotX + 1, pivotY + 2);
+                }
             case UPWARD:
-                return isEmptyTile(pivotX - 1, pivotY + 1)
-                        && isEmptyTile(pivotX, pivotY + 1)
-                        && isEmptyTile(pivotX + 1, pivotY);
+                if (pivotY + 1 >= GameManager.getInstance().getPlayground()[0].length) {
+                    return isEmptyTile(pivotX - 1, pivotY + 1)
+                            && isEmptyTile(pivotX, pivotY + 1)
+                            && isEmptyTile(pivotX + 1, pivotY);
+                } else {
+                    return false;
+                }
             default:
                 return false;
         }
@@ -105,17 +121,23 @@ public class LeftS extends Piece {
 
     @Override
     public void freeze() {
-
+        clearTileLeftS();
+        settleTileLeftS();
     }
 
     @Override
     public boolean canDropIntoPlayground() {
-        return false;
+        return isEmptyTile(0, 4)
+                && isEmptyTile(0, 3)
+                && isEmptyTile(1, 4)
+                && isEmptyTile(1, 5);
     }
 
     @Override
     public void dropIntoPlayground() {
-
+        pivotX=0;
+        pivotY=4;
+        setTileLeftS();
     }
 
     public void clearTileLeftS() {
@@ -149,6 +171,18 @@ public class LeftS extends Piece {
     }
 
     public void settleTileLeftS() {
+        switch (rotationStatus) {
+            case DEFAULT:
+                setTileFull(pivotX, pivotY - 1);
+                setTileFull(pivotX, pivotY);
+                setTileFull(pivotX + 1, pivotY);
+                setTileFull(pivotX + 1, pivotY + 1);
+            case UPWARD:
+                setTileFull(pivotX - 1, pivotY);
+                setTileFull(pivotX, pivotY);
+                setTileFull(pivotX, pivotY - 1);
+                setTileFull(pivotX + 1, pivotY - 1);
+        }
     }
 
     public boolean isEmptyTile(int pivotX, int pivotY) {
