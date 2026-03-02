@@ -74,11 +74,11 @@ public class Bar extends Piece {
         char[][] playground = GameManager.getInstance().getPlayground();
 
 
-        if (pivotX - 1 < 0) {
+        if (pivotY - 1 < 0) {
             return false;
         }
 
-        if (playground[pivotX - 1][pivotY] == GameManager.CELLA_PEZZO) {
+        if (playground[pivotX ][pivotY-1] == GameManager.CELLA_PEZZO) {
             return false;
         }
 
@@ -89,11 +89,11 @@ public class Bar extends Piece {
     public boolean canMoveDx() {
         char[][] playground = GameManager.getInstance().getPlayground();
 
-        if (pivotX + 1 > playground.length) {
+        if (pivotY + 1 >= playground[pivotX].length) {
             return false;
         }
 
-        if (playground[pivotX + 1][pivotY] == GameManager.CELLA_PEZZO) {
+        if (playground[pivotX ][pivotY+1] == GameManager.CELLA_PEZZO) {
             return false;
         }
         return true;
