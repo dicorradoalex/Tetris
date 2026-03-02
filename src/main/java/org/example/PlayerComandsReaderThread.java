@@ -1,54 +1,68 @@
 package org.example;
 
-import java.awt.event.*;
+import lc.kra.system.keyboard.GlobalKeyboardHook;
+import lc.kra.system.keyboard.event.GlobalKeyAdapter;
+import lc.kra.system.keyboard.event.GlobalKeyEvent;
 
-public class PlayerComandsReaderThread implements Runnable, KeyListener  {
+import java.awt.event.*;
+import java.util.Map;
+
+public class PlayerComandsReaderThread implements Runnable {
+    private static boolean run = true;
 
     @Override
     public void run() {
-    }
+        GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(true); // Use false here to switch to hook instead of raw input
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
+        keyboardHook.addKeyListener(new GlobalKeyAdapter() {
 
+            @Override
+            public void keyPressed(GlobalKeyEvent event) {
+                System.out.println(event);
+                if (event.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
+                    run = false;
+                }
+                boolean sholdReprintPlayground = true;
 
-    @Override
-    public void keyPressed(KeyEvent e) {
+                switch (event.getVirtualKeyCode()) {
 
-        boolean sholdReprintPlayground = true;
+                    case GlobalKeyEvent.VK_LEFT:
+                        GameManager.getInstance().moveCurrentPieceSx();
+                        System.out.println("LEFFFFFFFFFFFT");
+                        break;
 
-        switch (e.getKeyCode()) {
+                    case GlobalKeyEvent.VK_RIGHT:
+                        GameManager.getInstance().moveCurrentPieceDx();
+                        break;
 
-            case KeyEvent.VK_LEFT:
-                GameManager.getInstance().moveCurrentPieceSx();
-                break;
+                    case GlobalKeyEvent.VK_UP:
+                        GameManager.getInstance().rotateCurrentPiece();
+                        break;
 
-            case KeyEvent.VK_RIGHT:
-                GameManager.getInstance().moveCurrentPieceDx();
-                break;
+                    case GlobalKeyEvent.VK_DOWN:
+                        GameManager.getInstance().moveCurrentPieceDown();
+                        break;
 
-            case KeyEvent.VK_UP:
-                GameManager.getInstance().rotateCurrentPiece();
-                break;
+                    default:
+                        sholdReprintPlayground = false;
+                }
 
-            case KeyEvent.VK_DOWN:
-                GameManager.getInstance().moveCurrentPieceDown();
-                break;
+                if (sholdReprintPlayground) {
+                    GameManager.getInstance().printPlayground();
+                }
 
-            default:
-                sholdReprintPlayground = false;
+            }
+        });
+
+        try {
+            while (run) {
+                Thread.sleep(128);
+            }
+        } catch (InterruptedException e) {
+            //Do nothing
+        } finally {
+            keyboardHook.shutdownHook();
         }
-
-        if(sholdReprintPlayground) {
-            GameManager.getInstance().printPlayground();
-        }
     }
-
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
 }
 
