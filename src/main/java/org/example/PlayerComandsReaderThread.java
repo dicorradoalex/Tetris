@@ -8,9 +8,13 @@ import java.awt.event.*;
 public class PlayerComandsReaderThread implements Runnable {
 
     private volatile boolean running = true;
-
+    private boolean useInput = true;
     @Override
     public void run() {
+        
+        if(!useInput){
+            return;
+        }
         try {
             // Costruisce il terminale interattivo di JLine3
             Terminal terminal = TerminalBuilder.builder()
