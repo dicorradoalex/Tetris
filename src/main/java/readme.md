@@ -1,1 +1,3 @@
 # Task
+
+Samuele Salica: checkWinLoseCondition
