@@ -18,7 +18,6 @@ public class PlayerComandsReaderThread implements Runnable {
 
             @Override
             public void keyPressed(GlobalKeyEvent event) {
-                System.out.println(event);
                 if (event.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
                     run = false;
                 }
@@ -28,7 +27,6 @@ public class PlayerComandsReaderThread implements Runnable {
 
                     case GlobalKeyEvent.VK_LEFT:
                         GameManager.getInstance().moveCurrentPieceSx();
-                        System.out.println("LEFFFFFFFFFFFT");
                         break;
 
                     case GlobalKeyEvent.VK_RIGHT:
