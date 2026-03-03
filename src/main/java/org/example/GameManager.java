@@ -262,13 +262,13 @@ public class GameManager {
     public void checkWinLoseConditions() {
         // Se currentPiece è null, significa che non riesco a droppare un nuovo pezzo
         // Quindi ho PERSO
-        if (currentPiece == null) {
-            endGame(false);
+        if (pieces != null && pieces.isEmpty()) {
+            endGame(true);
         }
         // Se la lista di pezzi è vuota, significa che ho posizionato tutti gli oggetti
         // Quindi ho VINTO
-        else if (pieces != null && pieces.isEmpty()) {
-            endGame(true);
+        else if (currentPiece == null) {
+            endGame(false);
         }
     }
 
