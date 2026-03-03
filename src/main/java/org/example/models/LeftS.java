@@ -3,8 +3,8 @@ package org.example.models;
 import org.example.GameManager;
 
 public class LeftS extends Piece {
-    public final static int DEFAULT = 0;
-    public final static int UPWARD = 1;
+    private final int DEFAULT = 0;
+    private final int UPWARD = 1;
 
     public LeftS() {
         super();
@@ -13,17 +13,22 @@ public class LeftS extends Piece {
 
     @Override
     public boolean canRotate() {
-        switch (rotationStatus) {
-            case DEFAULT:
-                return isEmptyTile(pivotX - 1, pivotY)
-                        && isEmptyTile(pivotX, pivotY - 1)
-                        && isEmptyTile(pivotX + 1, pivotY - 1);
-            case UPWARD:
-                return isEmptyTile(pivotX - 1, pivotY)
-                        && isEmptyTile(pivotX + 1, pivotY)
-                        && isEmptyTile(pivotX + 1, pivotY + 1);
-            default:
-                return false;
+        if (pivotX > 0) {
+            switch (rotationStatus) {
+                case DEFAULT:
+                    return isEmptyTile(pivotX - 1, pivotY)
+                            && isEmptyTile(pivotX, pivotY - 1)
+                            && isEmptyTile(pivotX + 1, pivotY - 1);
+
+                case UPWARD:
+                    return isEmptyTile(pivotX, pivotY - 1)
+                            && isEmptyTile(pivotX + 1, pivotY)
+                            && isEmptyTile(pivotX + 1, pivotY + 1);
+                default:
+                    return false;
+            }
+        } else {
+            return false;
         }
     }
 
@@ -90,10 +95,13 @@ public class LeftS extends Piece {
 
     @Override
     public void rotate() {
+        clearTileLeftS();
         if (rotationStatus == DEFAULT) {
             rotationStatus = UPWARD;
+            setTileLeftS();
         } else {
             rotationStatus = DEFAULT;
+            setTileLeftS();
         }
 
     }
@@ -135,8 +143,8 @@ public class LeftS extends Piece {
 
     @Override
     public void dropIntoPlayground() {
-        this.pivotX=0;
-        this.pivotY=4;
+        this.pivotX = 0;
+        this.pivotY = 4;
         setTileLeftS();
     }
 
@@ -192,7 +200,8 @@ public class LeftS extends Piece {
     }
 
     public boolean isEmptyTile(int pivotX, int pivotY) {
-        return GameManager.getInstance().getPlayground()[pivotX][pivotY] == GameManager.CELLA_VUOTA;
+        return GameManager.getInstance().getPlayground()[pivotX][pivotY] == GameManager.CELLA_VUOTA
+                || GameManager.getInstance().getPlayground()[pivotX][pivotY] == GameManager.CELLA_PEZZO;
     }
 
     private void setTileFull(int pivotX, int pivotY) {
