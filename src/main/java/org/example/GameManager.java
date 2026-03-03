@@ -1,6 +1,5 @@
 package org.example;
 
-
 import org.example.models.Piece;
 import org.example.models.Square;
 
@@ -9,17 +8,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 public class GameManager {
 
-
-
     static char[][] playground = new char[20][10];
-    //  valore interno alla cella avrà un significato specifico
-    //  - ' ' => cella vuota, un pezzo può sostare su questa cella
-    //  - '#' => cella piena di "background" (pezzi bloccati), un pezzo non può sostare qui, collide
-    //  - '@' => cella che indica un "pezzo" del Piece che sta scendendo (oggetto che il player sta gestendo)
-
+    // valore interno alla cella avrà un significato specifico
+    // - ' ' => cella vuota, un pezzo può sostare su questa cella
+    // - '#' => cella piena di "background" (pezzi bloccati), un pezzo non può
+    // sostare qui, collide
+    // - '@' => cella che indica un "pezzo" del Piece che sta scendendo (oggetto che
+    // il player sta gestendo)
 
     // Attributi
     public static final char CELLA_VUOTA = '_';
@@ -43,12 +40,14 @@ public class GameManager {
         return GameManager.INSTANCE;
     }
 
-    // Viene avviato questo dall'esterno - È il flusso di operazioni che fa il GameManager
+    // Viene avviato questo dall'esterno - È il flusso di operazioni che fa il
+    // GameManager
     public void start() {
         printWelcomeMessage();
         initGame(); // inizializza il playground e genera la lista dei pezzi casuali
 
-        currentPiece = dropNewPiece(); // genera un pezzo casuale, vede se lo puo droppare e lo droppa (oppure restituisce null)
+        currentPiece = dropNewPiece(); // genera un pezzo casuale, vede se lo puo droppare e lo droppa (oppure
+                                       // restituisce null)
 
         printPlayground();
         // stampa il playground
@@ -59,8 +58,8 @@ public class GameManager {
         /**
          * - i metodi start suddetti evidenzieranno se un pezzo ha colliso
          * - quindi causeranno la necessità di invocare nuovamente dropNewPiece()
-         evaluateCleanRows(); // -> dropNewPiece()
-         checkWinLoseConditions();
+         * evaluateCleanRows(); // -> dropNewPiece()
+         * checkWinLoseConditions();
          */
     }
 
@@ -68,7 +67,6 @@ public class GameManager {
         initPlayground();
         genRandomListOfPieces();
     }
-
 
     public void initPlayground() {
         // REFACTORING
@@ -96,16 +94,15 @@ public class GameManager {
         System.out.println("Punteggio: " + score);
     }
 
-    // Forse inutile inizializzare la lista di pezzi: Posso generare randomicamente un pezzo
+    // Forse inutile inizializzare la lista di pezzi: Posso generare randomicamente
+    // un pezzo
     private GameManager() {
 
     }
 
-
     private void printGoodbyeMessage() {
-        // TODO 
+        // TODO
     }
-
 
     private void printWelcomeMessage() {
         // TODO
@@ -129,7 +126,6 @@ public class GameManager {
         Collections.shuffle(pieces);
     }
 
-
     // prende un pezzo dallo stack (se non ce n'è più, l'utente ha vinto)
     // lo inserisce in un punto specifico in alto nel playground
     // - invoco il metodo "canDropIntoPlayground()" del Piece
@@ -137,7 +133,8 @@ public class GameManager {
     // --- se può, invoco il metodo "dropIntoPlayground()" del Piece
     public Piece dropNewPiece() {
 
-        // 1. Controllo di sicurezza: se la lista è vuota, la ricarichiamo e la mischiamo
+        // 1. Controllo di sicurezza: se la lista è vuota, la ricarichiamo e la
+        // mischiamo
         if (pieces == null || pieces.isEmpty()) {
             genRandomListOfPieces();
         }
@@ -146,13 +143,14 @@ public class GameManager {
         // Il metodo remove(0) prende l'elemento in cima e lo toglie dalla lista.
         currentPiece = pieces.remove(0);
 
-
         currentPiece = new Square(); // 2. Qua assegno 'qualcosa' a dropNewPiece
 
-        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa funzione
-        //    perché se restiuisce false, allora restituisce null
-        //    e il valore di ritorno di questa funzione viene assegnato a currentPiece nella funzione
-        //    moveCurrentPieceDownForTimeExpiry() dopo l'else
+        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa
+                                                                              // funzione
+        // perché se restiuisce false, allora restituisce null
+        // e il valore di ritorno di questa funzione viene assegnato a currentPiece
+        // nella funzione
+        // moveCurrentPieceDownForTimeExpiry() dopo l'else
         if (!isCanDropInPlayground) {
             return null; // qua restituisce null -> sospetto
         }
@@ -164,8 +162,9 @@ public class GameManager {
     // 1. Produce il "bug"
     public void moveCurrentPieceDownForTimeExpiry() {
         if (currentPiece == null) {
-            System.out.println("ERRORE: currentPiece è null"); // viene stampato in loop dalla console, perché? devo capire perché currentPiece è null
-            return;                                            // dove viene inizializzato currentPiece? in dropNewPiece
+            System.out.println("ERRORE: currentPiece è null"); // viene stampato in loop dalla console, perché? devo
+                                                               // capire perché currentPiece è null
+            return; // dove viene inizializzato currentPiece? in dropNewPiece
         }
         if (currentPiece.canMoveDown()) {
             currentPiece.moveDown();
@@ -173,11 +172,10 @@ public class GameManager {
             currentPiece.freeze();
             evaluateCleanRows();
             currentPiece = dropNewPiece(); // qua diventa null al secondo tick
-            checkWinLoseConditions(); //TODO: verificare se è corretto tenerla qui questa chiamata
+            checkWinLoseConditions(); // TODO: verificare se è corretto tenerla qui questa chiamata
         }
         printPlayground();
     }
-
 
     public void moveCurrentPieceDown() {
         this.moveCurrentPieceDownForTimeExpiry();
@@ -193,12 +191,12 @@ public class GameManager {
         score += points;
     }
 
-
     // Il metodo evaluateCleanRows():
-    //- cerca tutte le righe completamente piene nel playground
-    //- calcola il punteggio in base a quante righe vengono eliminate contemporaneamente
-    //- compatta il campo “facendo scendere” le righe sopra
-    //- svuota le righe in alto che rimangono libere
+    // - cerca tutte le righe completamente piene nel playground
+    // - calcola il punteggio in base a quante righe vengono eliminate
+    // contemporaneamente
+    // - compatta il campo “facendo scendere” le righe sopra
+    // - svuota le righe in alto che rimangono libere
     public void evaluateCleanRows() {
         System.err.println("[TRACE] evaluateCleanRows() chiamato");
 
@@ -232,7 +230,7 @@ public class GameManager {
 
         // --- CALCOLO PUNTEGGIO ---
         int n = fullRows.size();
-        int points = n * n;   // formula scelta insieme
+        int points = n * n; // formula scelta insieme
         GameManager.getInstance().addScore(points);
 
         System.err.println("Hai eliminato " + n + " righe! +" + points + " punti.");
@@ -261,23 +259,34 @@ public class GameManager {
         }
     }
 
-
     public void checkWinLoseConditions() {
-        // TODO
+        // Se currentPiece è null, significa che non riesco a droppare un nuovo pezzo
+        // Quindi ho PERSO
+        if (currentPiece == null) {
+            endGame(false);
+        }
+        // Se la lista di pezzi è vuota, significa che ho posizionato tutti gli oggetti
+        // Quindi ho VINTO
+        else if (pieces != null && pieces.isEmpty()) {
+            endGame(true);
+        }
+    }
 
-        // * WIN Conditions
-        // * - ho posizionato tutti gli oggetti
-        // * LOSE Conditions
-        // * - non posso più droppare oggetti
+    private void endGame(boolean hasWon) {
+        if (hasWon) {
+            System.out.println("\nHAI VINTO!");
+        } else {
+            System.out.println("\nHAI PERSO!");
+        }
 
-        // if(haVinto o hoPerso) {
-        //     //stoppo tutti i thread...
-        //     timerThread.interrupt();
-        //     commandsThread.interrupt();
-        //     printGoodbyeMessage();
-        //     //nice-to-have: save records...
-        //     //nice-to-have: chiedere al player se vuole fare una nuova partita
-        // }
+        // Stoppo i thread timer e quello che legge i comandi
+        timerThread.interrupt();
+        commandsThread.interrupt();
+
+        printGoodbyeMessage();
+
+        // TODO: nice-to-have: save records...
+        // TODO: nice-to-have: chiedere al player se vuole fare una nuova partita
     }
 
     public void startThreadToReadUserCommands() {
@@ -285,10 +294,11 @@ public class GameManager {
         // --- thread che legge da console
         // --- thread che stampa (ogni volta che il timer scade)
         // --- thread che ri-stampa (ogni volta che l'utente muove/ruota un pezzo)
-        // --- NB: ogni volta che un utente ruota un oggetto, il thread-timer che stampa "riparte"
+        // --- NB: ogni volta che un utente ruota un oggetto, il thread-timer che stampa
+        // "riparte"
         // --- un utente potrebbe far scendere velocemente un pezzo sul fondale o cmq
         // facendolo collidere col fondale del playground
-        //  -> evaluateCleanRows() -> dropNewPiece() -> checkWinLoseConditions()
+        // -> evaluateCleanRows() -> dropNewPiece() -> checkWinLoseConditions()
 
         PlayerComandsReaderThread thread = new PlayerComandsReaderThread();
         commandsThread = new Thread(thread);
@@ -334,14 +344,14 @@ public class GameManager {
     public void rotateCurrentPiece() {
         if (currentPiece.canRotate()) {
             currentPiece.rotate();
-            // TODO nice-to-have ogni volta che un utente ruota un oggetto, il thread-timer che stampa "riparte"
+            // TODO nice-to-have ogni volta che un utente ruota un oggetto, il thread-timer
+            // che stampa "riparte"
             try {
-                timerThread.sleep(250); //TODO: potrebbe dipendere dal livello
+                timerThread.sleep(250); // TODO: potrebbe dipendere dal livello
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-
 
 }
