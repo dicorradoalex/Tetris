@@ -1,54 +1,68 @@
 package org.example;
 
-import java.awt.event.*;
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
 
-public class PlayerComandsReaderThread implements Runnable, KeyListener {
+public class PlayerComandsReaderThread implements Runnable {
+
+    private volatile boolean running = true;
 
     @Override
     public void run() {
-    }
+        try {
+            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            terminal.setCursorVisible(false);
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
+            while (running) {
 
+                KeyStroke key = terminal.pollInput(); // NON BLOCCA
 
-    @Override
-    public void keyPressed(KeyEvent e) {
+                if (key == null) {
+                    Thread.sleep(10);
+                    continue;
+                }
 
-        boolean sholdReprintPlayground = true;
+                boolean shouldReprint = true;
 
-        switch (e.getKeyCode()) {
+                KeyType type = key.getKeyType();
 
-            case KeyEvent.VK_LEFT:
-                GameManager.getInstance().moveCurrentPieceSx();
-                break;
+                switch (type) {
 
-            case KeyEvent.VK_RIGHT:
-                GameManager.getInstance().moveCurrentPieceDx();
-                break;
+                    case ArrowLeft:
+                        GameManager.getInstance().moveCurrentPieceSx();
+                        break;
 
-            case KeyEvent.VK_UP:
-                GameManager.getInstance().rotateCurrentPiece();
-                break;
+                    case ArrowRight:
+                        GameManager.getInstance().moveCurrentPieceDx();
+                        break;
 
-            case KeyEvent.VK_DOWN:
-                GameManager.getInstance().moveCurrentPieceDown();
-                break;
+                    case ArrowUp:
+                        GameManager.getInstance().rotateCurrentPiece();
+                        break;
 
-            default:
-                sholdReprintPlayground = false;
+                    case ArrowDown:
+                        GameManager.getInstance().moveCurrentPieceDown();
+                        break;
+
+                    default:
+                        shouldReprint = false;
+                }
+
+                if (shouldReprint) {
+                    GameManager.getInstance().printPlayground();
+                }
+            }
+
+            terminal.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        if (sholdReprintPlayground) {
-            GameManager.getInstance().printPlayground();
-        }
     }
 
-
-    @Override
-    public void keyReleased(KeyEvent e) {
+    public void stop() {
+        running = false;
     }
-
 }
-
