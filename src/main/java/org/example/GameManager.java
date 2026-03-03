@@ -1,11 +1,6 @@
 package org.example;
 
-import org.example.models.LeftL;
-import org.example.models.LeftS;
-import org.example.models.Piece;
-import org.example.models.RightL;
-import org.example.models.RightS;
-import org.example.models.Square;
+import org.example.models.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,6 +117,7 @@ public class GameManager {
         pieces.add(new RightL());
         pieces.add(new LeftL());
         pieces.add(new RightL());
+        pieces.add(new Bar());
 
         Collections.shuffle(pieces);
     }
