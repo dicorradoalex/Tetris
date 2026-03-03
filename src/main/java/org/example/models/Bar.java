@@ -6,53 +6,72 @@ public class Bar extends Piece {
 
 
     /**
-     * Square
+     * Bar
      * - 4 blocchi
-     * - il pivot è irrilevante / non ruota
+     * - il pivot è -*--
      */
 
     public Bar() {
         super();
+        rotationStatus = Rotation.Vertical.getType();
+    }
 
+    enum Rotation {
+        Vertical(1),
+        Horizontal(2);
+
+        private final int type;
+
+        Rotation(int value) {
+            this.type = value;
+        }
+
+        public int getType() {
+            return type;
+        }
     }
 
     public boolean isVerticalRoutate() {
-        char[][] playground = GameManager.getInstance().getPlayground();
-
-
-        if (playground[pivotX][pivotY] == GameManager.CELLA_PEZZO &&
-                playground[pivotX + 1][pivotY] == GameManager.CELLA_PEZZO
-        ) {
-            return true;
-        }
-
-        return false;
+        return rotationStatus == 1;
     }
 
     @Override
     public boolean canRotate() {
 
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
 
         // If Vertical
         if (isVerticalRoutate()) {
-            if (playground[pivotX][pivotY - 1] == GameManager.CELLA_PEZZO &&
-                    playground[pivotX][pivotY] == GameManager.CELLA_PEZZO &&
-                    playground[pivotX][pivotY - 2] == GameManager.CELLA_PEZZO &&
-                    playground[pivotX][pivotY - 3] == GameManager.CELLA_PEZZO
+            if (pivotY + 2 >= playground[pivotX].length || pivotY - 1 < 0) {
+                return false;
+            }
+
+            if (playground[pivotX][pivotY - 1] != GameManager.CELLA_VUOTA ||
+                    playground[pivotX][pivotY + 1] != GameManager.CELLA_VUOTA ||
+                    playground[pivotX][pivotY + 2] != GameManager.CELLA_VUOTA
+            ) {
+                return false;
+            }
+
+        } else {
+            if (pivotX + 2 > playground.length || pivotX - 1 < 0) {
+                return false;
+            }
+            if (playground[pivotX - 1][pivotY] != GameManager.CELLA_VUOTA ||
+                    playground[pivotX + 1][pivotY] != GameManager.CELLA_VUOTA ||
+                    playground[pivotX + 2][pivotY] != GameManager.CELLA_VUOTA
             ) {
                 return false;
             }
 
         }
 
-
         return true;
     }
 
     @Override
     public boolean canMoveDown() {
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
 
         // if Vertical
         if (isVerticalRoutate()) {
@@ -63,6 +82,20 @@ public class Bar extends Piece {
             if (playground[pivotX + 3][pivotY] == GameManager.CELLA_VUOTA) {
                 return true;
             }
+
+        } else {
+            int newPivotY = this.pivotY;
+            int newPivotX = this.pivotX + 1;
+            if (newPivotX >= playground.length) {
+                return false;
+            }
+
+            if (playground[pivotX + 1][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX + 1][newPivotY + 1] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX + 1][newPivotY + 2] == GameManager.CELLA_VUOTA
+            ) {
+                return true;
+            }
         }
 
         return false;
@@ -71,41 +104,78 @@ public class Bar extends Piece {
 
     @Override
     public boolean canMoveSx() {
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
 
+        if (isVerticalRoutate()) {
+            if (pivotY - 1 < 0) {
+                return false;
+            }
+            int newPivotY = this.pivotY - 1;
 
-        if (pivotY - 1 < 0) {
-            return false;
+            if (playground[pivotX - 1][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX + 1][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX + 2][newPivotY] == GameManager.CELLA_VUOTA
+            ) {
+                return true;
+            }
+
+        } else {
+            if (pivotY - 2 < 0) {
+                return false;
+            }
+
+            if (playground[pivotX][pivotY - 2] == GameManager.CELLA_VUOTA) {
+                return true;
+            }
+
         }
 
-        if (playground[pivotX ][pivotY-1] == GameManager.CELLA_PEZZO) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     @Override
     public boolean canMoveDx() {
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
 
-        if (pivotY + 1 >= playground[pivotX].length) {
-            return false;
-        }
+        if (isVerticalRoutate()) {
 
-        if (playground[pivotX ][pivotY+1] == GameManager.CELLA_PEZZO) {
-            return false;
+            if (pivotY + 1 >= playground[pivotX].length) {
+                return false;
+            }
+
+            if (playground[pivotX][pivotY + 1] == GameManager.CELLA_VUOTA) {
+                return true;
+            }
+
+
+            int newPivotY = this.pivotY + 1;
+
+            if (playground[pivotX - 1][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX + 1][newPivotY] == GameManager.CELLA_VUOTA &&
+                    playground[pivotX + 2][newPivotY] == GameManager.CELLA_VUOTA
+            ) {
+                return true;
+            }
+        } else {
+            if (pivotY + 3 >= playground[pivotX].length) {
+                return false;
+            }
+
+            if (playground[pivotX][pivotY + 3] == GameManager.CELLA_VUOTA) {
+                return true;
+            }
         }
-        return true;
+        return false;
 
     }
 
     @Override
     public void rotate() {
 
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
 
-        // Definire le variabili per le celle
         char cellEmpty = GameManager.CELLA_VUOTA;
         char cellPiece = GameManager.CELLA_PEZZO;
 
@@ -114,91 +184,117 @@ public class Bar extends Piece {
             setTypeCellVertical(playground, cellEmpty);
 
             // BASE 2: Draw
-            setTypeCelleHorizzontal(playground, cellPiece);
+            setTypeCelleHorizontal(playground, cellPiece);
 
+            rotationStatus = Rotation.Horizontal.getType();
         } else {
             // BASE 1: Clear
-            setTypeCelleHorizzontal(playground, cellEmpty);
+            setTypeCelleHorizontal(playground, cellEmpty);
 
             // BASE 1: Draw
             setTypeCellVertical(playground, cellPiece);
+
+            rotationStatus = Rotation.Vertical.getType();
         }
 
 
     }
 
-    private void setTypeCelleHorizzontal(char[][] playground, char cellaPezzio) {
-        playground[pivotX][pivotY - 1] = cellaPezzio;
-        playground[pivotX][pivotY] = cellaPezzio;
-        playground[pivotX][pivotY + 1] = cellaPezzio;
-        playground[pivotX][pivotY + 2] = cellaPezzio;
+    private void setTypeCelleHorizontal(char[][] playground, char cellPiece) {
+        playground[pivotX][pivotY - 1] = cellPiece;
+        playground[pivotX][pivotY] = cellPiece;
+        playground[pivotX][pivotY + 1] = cellPiece;
+        playground[pivotX][pivotY + 2] = cellPiece;
     }
 
-    private void setTypeCellVertical(char[][] playground, char cellaVuota) {
-        playground[pivotX - 1][pivotY] = cellaVuota;
-        playground[pivotX][pivotY] = cellaVuota;
-        playground[pivotX + 1][pivotY] = cellaVuota;
-        playground[pivotX + 2][pivotY] = cellaVuota;
+    private void setTypeCellVertical(char[][] playground, char cellEmpty) {
+        playground[pivotX - 1][pivotY] = cellEmpty;
+        playground[pivotX][pivotY] = cellEmpty;
+        playground[pivotX + 1][pivotY] = cellEmpty;
+        playground[pivotX + 2][pivotY] = cellEmpty;
     }
 
     @Override
     public void moveDown() {
 
         // if VERTICAL
-        // rimuovi @
-        setTypeCellVertical(GameManager.getInstance().getPlayground(), GameManager.CELLA_VUOTA);
+        if (isVerticalRoutate()) {
+            // remove @
+            setTypeCellVertical(getPlayground(), GameManager.CELLA_VUOTA);
 
-        this.pivotX++;
+            this.pivotX++;
 
-        // aggiorna @
-        setTypeCellVertical(GameManager.getInstance().getPlayground(), GameManager.CELLA_PEZZO);
+            // draw @
+            setTypeCellVertical(getPlayground(), GameManager.CELLA_PEZZO);
+
+        } else {
+            // clear @
+            setTypeCelleHorizontal(getPlayground(), GameManager.CELLA_VUOTA);
+
+            this.pivotX++;
+
+            // draw @
+            setTypeCelleHorizontal(getPlayground(), GameManager.CELLA_PEZZO);
+
+        }
 
     }
 
     @Override
     public void moveSx() {
 
-        char[][] playground = GameManager.getInstance().getPlayground();
-        if (isVerticalRoutate()){
+        char[][] playground = getPlayground();
+        if (isVerticalRoutate()) {
             //clear
-            setTypeCellVertical(playground,GameManager.CELLA_VUOTA);
+            setTypeCellVertical(playground, GameManager.CELLA_VUOTA);
             // Draw
             pivotY--;
-            setTypeCellVertical(playground,GameManager.CELLA_PEZZO);
+            setTypeCellVertical(playground, GameManager.CELLA_PEZZO);
+        } else {
+            //clear
+            setTypeCelleHorizontal(playground, GameManager.CELLA_VUOTA);
+            // Draw
+            pivotY--;
+            setTypeCelleHorizontal(playground, GameManager.CELLA_PEZZO);
         }
+    }
+
+    private char[][] getPlayground() {
+        return GameManager.getInstance().getPlayground();
     }
 
     @Override
     public void moveDx() {
-        char[][] playground = GameManager.getInstance().getPlayground();
-        if (isVerticalRoutate()){
+        char[][] playground = getPlayground();
+        if (isVerticalRoutate()) {
             //clear
-            setTypeCellVertical(playground,GameManager.CELLA_VUOTA);
+            setTypeCellVertical(playground, GameManager.CELLA_VUOTA);
             // Draw
             pivotY++;
-            setTypeCellVertical(playground,GameManager.CELLA_PEZZO);
-        }else {
-            System.out.println("BAR - mouve DX Horizzontal not complate");
+            setTypeCellVertical(playground, GameManager.CELLA_PEZZO);
+        } else {
+            //clear
+            setTypeCelleHorizontal(playground, GameManager.CELLA_VUOTA);
+            // Draw
+            pivotY++;
+            setTypeCelleHorizontal(playground, GameManager.CELLA_PEZZO);
         }
     }
 
     @Override
     public void freeze() {
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
         if (isVerticalRoutate()) {
-
             setTypeCellVertical(playground, GameManager.CELLA_PIENA);
-
-        }else {
-            setTypeCelleHorizzontal(playground,GameManager.CELLA_PIENA);
-
+        } else {
+            setTypeCelleHorizontal(playground, GameManager.CELLA_PIENA);
         }
     }
 
     // Verifica se posso droppare
     @Override
     public boolean canDropIntoPlayground() {
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
         if (playground[0][4] == GameManager.CELLA_VUOTA && playground[0][5] == GameManager.CELLA_VUOTA &&
                 playground[0][6] == GameManager.CELLA_VUOTA && playground[0][7] == GameManager.CELLA_VUOTA) {
             return true;
@@ -213,7 +309,7 @@ public class Bar extends Piece {
         this.pivotX = 1;
         this.pivotY = 4;
         // posiziono il pezzo all'inizio del playground
-        char[][] playground = GameManager.getInstance().getPlayground();
+        char[][] playground = getPlayground();
         setTypeCellVertical(playground, GameManager.CELLA_PEZZO);
 
     }
