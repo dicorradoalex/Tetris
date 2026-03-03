@@ -1,6 +1,10 @@
 package org.example;
 
+import org.example.models.LeftL;
+import org.example.models.LeftS;
 import org.example.models.Piece;
+import org.example.models.RightL;
+import org.example.models.RightS;
 import org.example.models.Square;
 
 import java.util.ArrayList;
@@ -89,14 +93,13 @@ public class GameManager {
         System.out.println("==========");
     }
 
-    // Forse inutile inizializzare la lista di pezzi: Posso generare randomicamente un pezzo
     private GameManager() {
 
     }
 
 
     private void printGoodbyeMessage() {
-        // TODO 
+        // TODO
     }
 
 
@@ -110,14 +113,15 @@ public class GameManager {
             pieces = new ArrayList<>();
         }
 
-        // Aggiungiamo i 7 pezzi classici alla lista
+        // Aggiungiamo i pezzi alla lista
         pieces.add(new Square());
-        pieces.add(new Square());
-        pieces.add(new Square());
-        pieces.add(new Square());
-        pieces.add(new Square());
-        pieces.add(new Square());
-        pieces.add(new Square());
+        pieces.add(new RightL());
+        pieces.add(new LeftL());
+        pieces.add(new LeftS());
+        pieces.add(new RightS());
+        pieces.add(new RightL());
+        pieces.add(new LeftL());
+        pieces.add(new RightL());
 
         Collections.shuffle(pieces);
     }
@@ -130,42 +134,31 @@ public class GameManager {
     // --- se può, invoco il metodo "dropIntoPlayground()" del Piece
     public Piece dropNewPiece() {
 
-        // 1. Controllo di sicurezza: se la lista è vuota, la ricarichiamo e la mischiamo
         if (pieces == null || pieces.isEmpty()) {
             genRandomListOfPieces();
         }
-
-        // "Peschiamo il primo pezzo dalla lista.
-        // Il metodo remove(0) prende l'elemento in cima e lo toglie dalla lista.
         currentPiece = pieces.remove(0);
 
-
-        currentPiece = new Square(); // 2. Qua assegno 'qualcosa' a dropNewPiece
-
-        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa funzione
-        //    perché se restiuisce false, allora restituisce null
-        //    e il valore di ritorno di questa funzione viene assegnato a currentPiece nella funzione
-        //    moveCurrentPieceDownForTimeExpiry() dopo l'else
+        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground();
         if (!isCanDropInPlayground) {
-            return null; // qua restituisce null -> sospetto
+            return null;
         }
-        currentPiece.dropIntoPlayground(); // -> vado a vedere che succede qua -> ok droppa il pezzo
+        currentPiece.dropIntoPlayground();
 
         return currentPiece;
     }
 
-    // 1. Produce il "bug"
     public void moveCurrentPieceDownForTimeExpiry() {
         if (currentPiece == null) {
-            System.out.println("ERRORE: currentPiece è null"); // viene stampato in loop dalla console, perché? devo capire perché currentPiece è null
-            return;                                            // dove viene inizializzato currentPiece? in dropNewPiece
+            System.out.println("ERRORE: currentPiece è null");
+            return;
         }
         if (currentPiece.canMoveDown()) {
             currentPiece.moveDown();
         } else {
             currentPiece.freeze();
             evaluateCleanRows();
-            currentPiece = dropNewPiece(); // qua diventa null al secondo tick
+            currentPiece = dropNewPiece();
             checkWinLoseConditions(); //TODO: verificare se è corretto tenerla qui questa chiamata
         }
         printPlayground();

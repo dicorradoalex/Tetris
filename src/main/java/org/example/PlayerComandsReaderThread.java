@@ -1,66 +1,75 @@
 package org.example;
 
-import lc.kra.system.keyboard.GlobalKeyboardHook;
-import lc.kra.system.keyboard.event.GlobalKeyAdapter;
-import lc.kra.system.keyboard.event.GlobalKeyEvent;
-
-import java.awt.event.*;
-import java.util.Map;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.NonBlockingReader;
 
 public class PlayerComandsReaderThread implements Runnable {
-    private static boolean run = true;
+
+    private volatile boolean running = true;
 
     @Override
     public void run() {
-        GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(true); // Use false here to switch to hook instead of raw input
+        try {
+            // Costruisce il terminale interattivo di JLine3
+            Terminal terminal = TerminalBuilder.builder()
+                    .system(true)
+                    .build();
 
-        keyboardHook.addKeyListener(new GlobalKeyAdapter() {
+            // Attiva "Raw Mode" per intercettare i tasti
+            terminal.enterRawMode();
 
-            @Override
-            public void keyPressed(GlobalKeyEvent event) {
-                if (event.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
-                    run = false;
+            // Crea il lettore che cattura l'input della tastiera
+            NonBlockingReader reader = terminal.reader();
+
+            while (running) {
+                // Il thread si mette in attesa e legge il codice numerico del tasto premuto
+                int read = reader.read();
+
+                // Se la lettura fallisce o viene interrotta, usciamo dal ciclo
+                if (read == -1) {
+                    break;
                 }
-                boolean sholdReprintPlayground = true;
 
-                switch (event.getVirtualKeyCode()) {
+                // Converte il codice numerico nel carattere corrispondente
+                char command = Character.toLowerCase((char) read);
+                boolean shouldReprintPlayground = true;
 
-                    case GlobalKeyEvent.VK_LEFT:
+                // Mapping dei tasti
+                switch (command) {
+                    case 'a':
                         GameManager.getInstance().moveCurrentPieceSx();
                         break;
-
-                    case GlobalKeyEvent.VK_RIGHT:
+                    case 'd':
                         GameManager.getInstance().moveCurrentPieceDx();
                         break;
-
-                    case GlobalKeyEvent.VK_UP:
+                    case 'w':
                         GameManager.getInstance().rotateCurrentPiece();
                         break;
-
-                    case GlobalKeyEvent.VK_DOWN:
+                    case 's':
                         GameManager.getInstance().moveCurrentPieceDown();
                         break;
-
+                    case 'q': // Per uscire
+                        System.out.println("Uscita in corso...");
+                        System.exit(0);
+                        break;
                     default:
-                        sholdReprintPlayground = false;
+                        // Se l'utente preme un tasto non valido, non ristampare la griglia
+                        shouldReprintPlayground = false;
+                        break;
                 }
 
-                if (sholdReprintPlayground) {
+                // Se il pezzo si è mosso, forza la ristampa immediata del playground
+                if (shouldReprintPlayground) {
                     GameManager.getInstance().printPlayground();
                 }
-
             }
-        });
-
-        try {
-            while (run) {
-                Thread.sleep(128);
-            }
-        } catch (InterruptedException e) {
-            //Do nothing
-        } finally {
-            keyboardHook.shutdownHook();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-}
 
+    public void stop() {
+        running = false;
+    }
+}
