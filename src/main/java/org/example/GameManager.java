@@ -1,10 +1,6 @@
 package org.example;
 
-import org.example.models.LeftL;
-import org.example.models.LeftS;
 import org.example.models.Piece;
-import org.example.models.RightL;
-import org.example.models.RightS;
 import org.example.models.Square;
 
 import java.util.ArrayList;
@@ -30,11 +26,6 @@ public class GameManager {
     // forse inutile la lista di pezzi
     List<Piece> pieces;
     static Piece currentPiece;
-
-    //Variabili per la gestione della difficoltà di gioco
-    private static final int PIECES_PER_LEVEL = 20;
-    private int piecesDropped;
-    private int gameLevel;
 
     Thread timerThread;
     Thread commandsThread;
@@ -71,8 +62,6 @@ public class GameManager {
     private void initGame() {
         initPlayground();
         genRandomListOfPieces();
-        this.piecesDropped = 0;
-        this.gameLevel = 1;
     }
 
 
@@ -100,13 +89,14 @@ public class GameManager {
         System.out.println("==========");
     }
 
+    // Forse inutile inizializzare la lista di pezzi: Posso generare randomicamente un pezzo
     private GameManager() {
 
     }
 
 
     private void printGoodbyeMessage() {
-        // TODO
+        // TODO 
     }
 
 
@@ -120,15 +110,14 @@ public class GameManager {
             pieces = new ArrayList<>();
         }
 
-        // Aggiungiamo i pezzi alla lista
+        // Aggiungiamo i 7 pezzi classici alla lista
         pieces.add(new Square());
-        pieces.add(new RightL());
-        pieces.add(new LeftL());
-        pieces.add(new LeftS());
-        pieces.add(new RightS());
-        pieces.add(new RightL());
-        pieces.add(new LeftL());
-        pieces.add(new RightL());
+        pieces.add(new Square());
+        pieces.add(new Square());
+        pieces.add(new Square());
+        pieces.add(new Square());
+        pieces.add(new Square());
+        pieces.add(new Square());
 
         Collections.shuffle(pieces);
     }
@@ -141,34 +130,42 @@ public class GameManager {
     // --- se può, invoco il metodo "dropIntoPlayground()" del Piece
     public Piece dropNewPiece() {
 
+        // 1. Controllo di sicurezza: se la lista è vuota, la ricarichiamo e la mischiamo
         if (pieces == null || pieces.isEmpty()) {
             genRandomListOfPieces();
         }
+
+        // "Peschiamo il primo pezzo dalla lista.
+        // Il metodo remove(0) prende l'elemento in cima e lo toglie dalla lista.
         currentPiece = pieces.remove(0);
 
-        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground();
-        if (!isCanDropInPlayground) {
-            return null;
-        }
-        currentPiece.dropIntoPlayground();
 
-        piecesDropped++;
-        checkDifficulty();
+        currentPiece = new Square(); // 2. Qua assegno 'qualcosa' a dropNewPiece
+
+        boolean isCanDropInPlayground = currentPiece.canDropIntoPlayground(); // -> vado a vedere cosa succede in questa funzione
+        //    perché se restiuisce false, allora restituisce null
+        //    e il valore di ritorno di questa funzione viene assegnato a currentPiece nella funzione
+        //    moveCurrentPieceDownForTimeExpiry() dopo l'else
+        if (!isCanDropInPlayground) {
+            return null; // qua restituisce null -> sospetto
+        }
+        currentPiece.dropIntoPlayground(); // -> vado a vedere che succede qua -> ok droppa il pezzo
 
         return currentPiece;
     }
 
+    // 1. Produce il "bug"
     public void moveCurrentPieceDownForTimeExpiry() {
         if (currentPiece == null) {
-            System.out.println("ERRORE: currentPiece è null");
-            return;
+            System.out.println("ERRORE: currentPiece è null"); // viene stampato in loop dalla console, perché? devo capire perché currentPiece è null
+            return;                                            // dove viene inizializzato currentPiece? in dropNewPiece
         }
         if (currentPiece.canMoveDown()) {
             currentPiece.moveDown();
         } else {
             currentPiece.freeze();
             evaluateCleanRows();
-            currentPiece = dropNewPiece();
+            currentPiece = dropNewPiece(); // qua diventa null al secondo tick
             checkWinLoseConditions(); //TODO: verificare se è corretto tenerla qui questa chiamata
         }
         printPlayground();
@@ -271,15 +268,5 @@ public class GameManager {
         }
     }
 
-    public void checkDifficulty(){
-        if (piecesDropped >= PIECES_PER_LEVEL) {
-            this.gameLevel++;
-            this.piecesDropped = 0;
-        }
-    }
-
-    public int getGameLevel() {
-        return gameLevel;
-    }
 
 }
