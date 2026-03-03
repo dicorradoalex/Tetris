@@ -31,6 +31,11 @@ public class GameManager {
     List<Piece> pieces;
     static Piece currentPiece;
 
+    //Variabili per la gestione della difficoltà di gioco
+    private static final int PIECES_PER_LEVEL = 20;
+    private int piecesDropped;
+    private int gameLevel;
+
     Thread timerThread;
     Thread commandsThread;
 
@@ -66,6 +71,8 @@ public class GameManager {
     private void initGame() {
         initPlayground();
         genRandomListOfPieces();
+        this.piecesDropped = 0;
+        this.gameLevel = 1;
     }
 
 
@@ -144,6 +151,9 @@ public class GameManager {
             return null;
         }
         currentPiece.dropIntoPlayground();
+
+        piecesDropped++;
+        checkDifficulty();
 
         return currentPiece;
     }
@@ -261,5 +271,15 @@ public class GameManager {
         }
     }
 
+    public void checkDifficulty(){
+        if (piecesDropped >= PIECES_PER_LEVEL) {
+            this.gameLevel++;
+            this.piecesDropped = 0;
+        }
+    }
+
+    public int getGameLevel() {
+        return gameLevel;
+    }
 
 }
