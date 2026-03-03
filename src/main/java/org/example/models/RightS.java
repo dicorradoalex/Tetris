@@ -3,8 +3,8 @@ package org.example.models;
 import org.example.GameManager;
 
 public class RightS extends Piece {
-    public final static int DEFAULT = 0;
-    public final static int UPWARD = 1;
+    private final int DEFAULT = 0;
+    private final int UPWARD = 1;
 
     public RightS() {
         super();
@@ -13,17 +13,21 @@ public class RightS extends Piece {
 
     @Override
     public boolean canRotate() {
-        switch (rotationStatus) {
-            case DEFAULT:
-                return isEmptyTile(pivotX - 1, pivotY)
-                        && isEmptyTile(pivotX, pivotY + 1)
-                        && isEmptyTile(pivotX + 1, pivotY + 1);
-            case UPWARD:
-                return isEmptyTile(pivotX, pivotY + 1)
-                        && isEmptyTile(pivotX + 1, pivotY - 1)
-                        && isEmptyTile(pivotX + 1, pivotY);
-            default:
-                return false;
+        if (pivotX > 0) {
+            switch (rotationStatus) {
+                case DEFAULT:
+                    return isEmptyTile(pivotX - 1, pivotY)
+                            && isEmptyTile(pivotX, pivotY + 1)
+                            && isEmptyTile(pivotX + 1, pivotY + 1);
+                case UPWARD:
+                    return isEmptyTile(pivotX, pivotY + 1)
+                            && isEmptyTile(pivotX + 1, pivotY - 1)
+                            && isEmptyTile(pivotX + 1, pivotY);
+                default:
+                    return false;
+            }
+        } else {
+            return false;
         }
     }
 
@@ -59,7 +63,7 @@ public class RightS extends Piece {
             case UPWARD:
                 if (pivotY - 1 >= 0) {
                     return isEmptyTile(pivotX - 1, pivotY - 1)
-                            && isEmptyTile(pivotX, pivotY - 1)
+                            && isEmptyTile(pivotX, pivotY)
                             && isEmptyTile(pivotX + 1, pivotY);
                 } else {
                     return false;
@@ -90,10 +94,13 @@ public class RightS extends Piece {
 
     @Override
     public void rotate() {
+        clearTileRightS();
         if (rotationStatus == DEFAULT) {
             rotationStatus = UPWARD;
+            setTileRightS();
         } else {
             rotationStatus = DEFAULT;
+            setTileRightS();
         }
 
     }
@@ -192,7 +199,8 @@ public class RightS extends Piece {
     }
 
     public boolean isEmptyTile(int pivotX, int pivotY) {
-        return GameManager.getInstance().getPlayground()[pivotX][pivotY] == GameManager.CELLA_VUOTA;
+        return GameManager.getInstance().getPlayground()[pivotX][pivotY] == GameManager.CELLA_VUOTA
+                || GameManager.getInstance().getPlayground()[pivotX][pivotY] == GameManager.CELLA_PEZZO;
     }
 
     private void setTileFull(int pivotX, int pivotY) {
