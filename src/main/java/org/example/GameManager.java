@@ -1,7 +1,10 @@
 package org.example;
 
+import org.example.models.LeftL;
+import org.example.models.LeftS;
 import org.example.models.Piece;
 import org.example.models.RightL;
+import org.example.models.RightS;
 import org.example.models.Square;
 
 import java.util.ArrayList;
@@ -113,9 +116,11 @@ public class GameManager {
         // Aggiungiamo i pezzi alla lista
         pieces.add(new Square());
         pieces.add(new RightL());
-        pieces.add(new Square());
+        pieces.add(new LeftL());
+        pieces.add(new LeftS());
+        pieces.add(new RightS());
         pieces.add(new RightL());
-        pieces.add(new Square());
+        pieces.add(new LeftL());
         pieces.add(new RightL());
 
         Collections.shuffle(pieces);
