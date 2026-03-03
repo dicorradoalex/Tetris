@@ -71,7 +71,7 @@ public class RightS extends Piece {
 
     @Override
     public boolean canMoveDx() {
-        if (pivotY + 2 >= GameManager.getInstance().getPlayground()[0].length) {
+        if (pivotY + 2 < GameManager.getInstance().getPlayground()[0].length) {
             switch (rotationStatus) {
                 case DEFAULT:
                     return isEmptyTile(pivotX, pivotY + 2)
