@@ -2,7 +2,7 @@ package org.example;
 
 import java.awt.event.*;
 
-public class PlayerComandsReaderThread implements Runnable, KeyListener  {
+public class PlayerComandsReaderThread implements Runnable, KeyListener {
 
     @Override
     public void run() {
@@ -40,7 +40,7 @@ public class PlayerComandsReaderThread implements Runnable, KeyListener  {
                 sholdReprintPlayground = false;
         }
 
-        if(sholdReprintPlayground) {
+        if (sholdReprintPlayground) {
             GameManager.getInstance().printPlayground();
         }
     }

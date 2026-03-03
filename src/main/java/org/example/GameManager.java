@@ -11,6 +11,7 @@ import java.util.List;
 
 public class GameManager {
 
+
     static char[][] playground = new char[20][10];
     //  valore interno alla cella avrà un significato specifico
     //  - ' ' => cella vuota, un pezzo può sostare su questa cella
@@ -176,15 +177,73 @@ public class GameManager {
         this.moveCurrentPieceDownForTimeExpiry();
     }
 
+
+    // Il metodo evaluateCleanRows():
+    //- cerca tutte le righe completamente piene nel playground
+    //- calcola il punteggio in base a quante righe vengono eliminate contemporaneamente
+    //- compatta il campo “facendo scendere” le righe sopra
+    //- svuota le righe in alto che rimangono libere
     public void evaluateCleanRows() {
+        System.out.println("[DEBUG] evaluateCleanRows() chiamato"); // verifico se il metodo viene richiamato
         // logica di eliminazione di una riga "full" e quindi incremento punteggio
         // - ogni volta che un pezzo si integra al fondale dobbiamo controllare se c'è una riga piena
+        int rows = playground.length;
+        int cols = playground[0].length;
+        List<Integer> fullRows = new ArrayList<>();
+
+        // Ricerca delle righe piene
+        for(int i=0; i < rows; i++){
+           boolean isFull = true;
+           for(int j=0; j < cols; j++){
+               if (playground[i][j] != CELLA_PIENA ){
+                   isFull=false;
+                   break;
+               }
+           }
+
+           if(isFull){
+               fullRows.add(i);
+           }
+
+        }
+        // se non ci sono righe piene non faccio nulla
+        if (fullRows.isEmpty()) {
+            return;
+        }
+
+
         // - a seconda di quante righe piene ci sono nello stesso momento, daremo un differente punteggio
         // --- 1 riga => 1 punto
         // --- 2 righe => 4 punti
         // --- 3 righe => 9 punti
         // --- 4 righe => 16 punti
+        // Calcolo del punteggio e applico la regola 2 righe → 2 alla seconda = 4 ecc...
+        int n = fullRows.size();
+        int points = n * n;
+        System.out.println("Hai eliminato " + n + " righe! +" + points + " punti.");
+        // - n: quante righe sono piene contemporaneamente.
+
+
+        // Ricostruisce il campo dal basso: per ogni riga non piena la copia
+        // nella posizione più bassa disponibile (writeRow). Le righe piene
+        // vengono saltate, ottenendo l’effetto di far scendere tutto il resto.
+        int writeRow = rows -1;
+        for(int i = rows -1; i >= 0; i--){
+            if(!fullRows.contains(i)){
+                for(int j=0; j < cols; j++){
+                    playground[writeRow][j] = playground[i][j];
+                }
+                writeRow--;
+            }
+        }
+
         // - tolte le righe piene, fare "scendere" il background in alto per occupare il posto delle righe liberate
+        // Pulizia delle righe in alto rimaste vuote
+        for(int i = writeRow; i >= 0; i--){
+            for(int j=0; j < cols; j++){
+                playground[i][j] = CELLA_VUOTA;
+            }
+        }
     }
 
     public void checkWinLoseConditions() {
