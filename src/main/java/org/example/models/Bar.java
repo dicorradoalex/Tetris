@@ -144,11 +144,6 @@ public class Bar extends Piece {
                 return false;
             }
 
-            if (playground[pivotX][pivotY + 1] == GameManager.CELLA_VUOTA) {
-                return true;
-            }
-
-
             int newPivotY = this.pivotY + 1;
 
             if (playground[pivotX - 1][newPivotY] == GameManager.CELLA_VUOTA &&
