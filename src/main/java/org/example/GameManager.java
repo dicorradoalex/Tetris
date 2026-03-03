@@ -1,5 +1,6 @@
 package org.example;
 
+
 import org.example.models.Piece;
 import org.example.models.Square;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 
 public class GameManager {
+
 
 
     static char[][] playground = new char[20][10];
@@ -48,10 +50,12 @@ public class GameManager {
 
         currentPiece = dropNewPiece(); // genera un pezzo casuale, vede se lo puo droppare e lo droppa (oppure restituisce null)
 
-        printPlayground(); // stampa il playground
+        printPlayground();
+        // stampa il playground
 
         startTimer(); // avvia il timer
         startThreadToReadUserCommands();
+
         /**
          * - i metodi start suddetti evidenzieranno se un pezzo ha colliso
          * - quindi causeranno la necessità di invocare nuovamente dropNewPiece()
@@ -77,17 +81,19 @@ public class GameManager {
     }
 
     public void printPlayground() {
-        //TODO
-        System.out.println("PLAYGROUND: ");
-        String riga = "";
+        System.out.println("PLAYGROUND:");
+
         for (int i = 0; i < playground.length; i++) {
             for (int j = 0; j < playground[i].length; j++) {
-                char c = playground[i][j];
-                System.out.print(c);
+                System.out.print(playground[i][j]);
             }
             System.out.println();
         }
+
         System.out.println("==========");
+
+        // --- STAMPA PUNTEGGIO ---
+        System.out.println("Punteggio: " + score);
     }
 
     // Forse inutile inizializzare la lista di pezzi: Posso generare randomicamente un pezzo
@@ -177,6 +183,16 @@ public class GameManager {
         this.moveCurrentPieceDownForTimeExpiry();
     }
 
+    private int score = 0;
+
+    public int getScore() {
+        return score;
+    }
+
+    public void addScore(int points) {
+        score += points;
+    }
+
 
     // Il metodo evaluateCleanRows():
     //- cerca tutte le righe completamente piene nel playground
@@ -184,67 +200,67 @@ public class GameManager {
     //- compatta il campo “facendo scendere” le righe sopra
     //- svuota le righe in alto che rimangono libere
     public void evaluateCleanRows() {
-        System.out.println("[DEBUG] evaluateCleanRows() chiamato"); // verifico se il metodo viene richiamato
-        // logica di eliminazione di una riga "full" e quindi incremento punteggio
-        // - ogni volta che un pezzo si integra al fondale dobbiamo controllare se c'è una riga piena
+        System.err.println("[TRACE] evaluateCleanRows() chiamato");
+
         int rows = playground.length;
         int cols = playground[0].length;
         List<Integer> fullRows = new ArrayList<>();
 
-        // Ricerca delle righe piene
-        for(int i=0; i < rows; i++){
-           boolean isFull = true;
-           for(int j=0; j < cols; j++){
-               if (playground[i][j] != CELLA_PIENA ){
-                   isFull=false;
-                   break;
-               }
-           }
-
-           if(isFull){
-               fullRows.add(i);
-           }
-
-        }
-        // se non ci sono righe piene non faccio nulla
-        if (fullRows.isEmpty()) {
-            return;
-        }
-
-
-        // - a seconda di quante righe piene ci sono nello stesso momento, daremo un differente punteggio
-        // --- 1 riga => 1 punto
-        // --- 2 righe => 4 punti
-        // --- 3 righe => 9 punti
-        // --- 4 righe => 16 punti
-        // Calcolo del punteggio e applico la regola 2 righe → 2 alla seconda = 4 ecc...
-        int n = fullRows.size();
-        int points = n * n;
-        System.out.println("Hai eliminato " + n + " righe! +" + points + " punti.");
-        // - n: quante righe sono piene contemporaneamente.
-
-
-        // Ricostruisce il campo dal basso: per ogni riga non piena la copia
-        // nella posizione più bassa disponibile (writeRow). Le righe piene
-        // vengono saltate, ottenendo l’effetto di far scendere tutto il resto.
-        int writeRow = rows -1;
-        for(int i = rows -1; i >= 0; i--){
-            if(!fullRows.contains(i)){
-                for(int j=0; j < cols; j++){
-                    playground[writeRow][j] = playground[i][j];
+        for (int i = 0; i < rows; i++) {
+            boolean isFull = true;
+            for (int j = 0; j < cols; j++) {
+                char c = playground[i][j];
+                System.err.println("[TRACE] cella (" + i + "," + j + ") = " + c);
+                if (c != CELLA_PIENA) {
+                    isFull = false;
+                    break;
                 }
-                writeRow--;
+            }
+
+            if (isFull) {
+                System.err.println("[TRACE] riga piena trovata: " + i);
+                fullRows.add(i);
             }
         }
 
-        // - tolte le righe piene, fare "scendere" il background in alto per occupare il posto delle righe liberate
-        // Pulizia delle righe in alto rimaste vuote
-        for(int i = writeRow; i >= 0; i--){
-            for(int j=0; j < cols; j++){
+        System.out.println("[TRACE] fullRows = " + fullRows);
+
+        if (fullRows.isEmpty()) {
+            System.err.println("[TRACE] nessuna riga piena, esco");
+            return;
+        }
+
+        // --- CALCOLO PUNTEGGIO ---
+        int n = fullRows.size();
+        int points = n * n;   // formula scelta insieme
+        GameManager.getInstance().addScore(points);
+
+        System.err.println("Hai eliminato " + n + " righe! +" + points + " punti.");
+        System.err.println("Punteggio totale: " + GameManager.getInstance().getScore());
+
+        // --- SHIFT DELLE RIGHE ---
+        int writeRow = rows - 1;
+        for (int i = rows - 1; i >= 0; i--) {
+            if (!fullRows.contains(i)) {
+                System.err.println("[TRACE] copio riga " + i + " in " + writeRow);
+                for (int j = 0; j < cols; j++) {
+                    playground[writeRow][j] = playground[i][j];
+                }
+                writeRow--;
+            } else {
+                System.err.println("[TRACE] salto riga piena " + i);
+            }
+        }
+
+        // --- PULIZIA DELLE RIGHE IN CIMA ---
+        for (int i = writeRow; i >= 0; i--) {
+            System.err.println("[TRACE] pulisco riga " + i);
+            for (int j = 0; j < cols; j++) {
                 playground[i][j] = CELLA_VUOTA;
             }
         }
     }
+
 
     public void checkWinLoseConditions() {
         // TODO
