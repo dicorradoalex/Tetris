@@ -128,6 +128,7 @@ public class GameManager {
         pieces.add(new RightL());
         pieces.add(new LeftL());
         pieces.add(new RightL());
+        pieces.add(new Bar());
 
         Collections.shuffle(pieces);
     }
