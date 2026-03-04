@@ -3,6 +3,7 @@ package org.example;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.NonBlockingReader;
+import java.awt.event.*;
 
 public class PlayerComandsReaderThread implements Runnable {
 
