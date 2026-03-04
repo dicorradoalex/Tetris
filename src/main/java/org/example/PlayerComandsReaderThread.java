@@ -10,10 +10,10 @@ import org.jline.utils.NonBlockingReader;
 public class PlayerComandsReaderThread implements Runnable {
 
     private volatile boolean running = true;
-    private boolean isHookInputKeyboard = true;
+    private boolean useInputKRA = true;
     @Override
     public void run() {
-        if (isHookInputKeyboard){
+        if (useInputKRA){
             setHookKeyboardGlobal();
             return;
         }
