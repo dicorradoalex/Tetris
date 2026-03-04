@@ -196,7 +196,7 @@ public class GameManager {
     //- compatta il campo “facendo scendere” le righe sopra
     //- svuota le righe in alto che rimangono libere
     public void evaluateCleanRows() {
-        System.err.println("[TRACE] evaluateCleanRows() chiamato");
+        //System.err.println("[TRACE] evaluateCleanRows() chiamato");
 
         int rows = playground.length;
         int cols = playground[0].length;
@@ -206,7 +206,7 @@ public class GameManager {
             boolean isFull = true;
             for (int j = 0; j < cols; j++) {
                 char c = playground[i][j];
-                System.err.println("[TRACE] cella (" + i + "," + j + ") = " + c);
+              //  System.err.println("[TRACE] cella (" + i + "," + j + ") = " + c);
                 if (c != CELLA_PIENA) {
                     isFull = false;
                     break;
@@ -214,15 +214,15 @@ public class GameManager {
             }
 
             if (isFull) {
-                System.err.println("[TRACE] riga piena trovata: " + i);
+               // System.err.println("[TRACE] riga piena trovata: " + i);
                 fullRows.add(i);
             }
         }
 
-        System.out.println("[TRACE] fullRows = " + fullRows);
+        //System.out.println("[TRACE] fullRows = " + fullRows);
 
         if (fullRows.isEmpty()) {
-            System.err.println("[TRACE] nessuna riga piena, esco");
+         //   System.err.println("[TRACE] nessuna riga piena, esco");
             return;
         }
 
@@ -231,8 +231,8 @@ public class GameManager {
         int points = n * n;   // formula scelta insieme
         GameManager.getInstance().addScore(points);
 
-        System.err.println("Hai eliminato " + n + " righe! +" + points + " punti.");
-        System.err.println("Punteggio totale: " + GameManager.getInstance().getScore());
+      //  System.err.println("Hai eliminato " + n + " righe! +" + points + " punti.");
+      //  System.err.println("Punteggio totale: " + GameManager.getInstance().getScore());
 
         // --- SHIFT DELLE RIGHE ---
         int writeRow = rows - 1;
