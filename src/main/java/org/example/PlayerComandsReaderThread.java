@@ -84,6 +84,8 @@ public class PlayerComandsReaderThread implements Runnable {
             public void keyPressed(GlobalKeyEvent event) {
                 if (event.getVirtualKeyCode() == GlobalKeyEvent.VK_ESCAPE) {
                     running = false;
+                    System.out.println("Uscita in corso...");
+                    System.exit(0);
                 }
                 boolean sholdReprintPlayground = true;
 
