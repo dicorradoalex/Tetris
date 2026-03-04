@@ -1,9 +1,8 @@
 package org.example;
 
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.NonBlockingReader;
 
 public class PlayerComandsReaderThread implements Runnable {
 
@@ -12,51 +11,59 @@ public class PlayerComandsReaderThread implements Runnable {
     @Override
     public void run() {
         try {
-            Terminal terminal = new DefaultTerminalFactory().createTerminal();
-            terminal.setCursorVisible(false);
+            // Costruisce il terminale interattivo di JLine3
+            Terminal terminal = TerminalBuilder.builder()
+                    .system(true)
+                    .build();
+
+            // Attiva "Raw Mode" per intercettare i tasti
+            terminal.enterRawMode();
+
+            // Crea il lettore che cattura l'input della tastiera
+            NonBlockingReader reader = terminal.reader();
 
             while (running) {
+                // Il thread si mette in attesa e legge il codice numerico del tasto premuto
+                int read = reader.read();
 
-                KeyStroke key = terminal.pollInput(); // NON BLOCCA
-
-                if (key == null) {
-                    Thread.sleep(10);
-                    continue;
+                // Se la lettura fallisce o viene interrotta, usciamo dal ciclo
+                if (read == -1) {
+                    break;
                 }
 
-                boolean shouldReprint = true;
+                // Converte il codice numerico nel carattere corrispondente
+                char command = Character.toLowerCase((char) read);
+                boolean shouldReprintPlayground = true;
 
-                KeyType type = key.getKeyType();
-
-                switch (type) {
-
-                    case ArrowLeft:
+                // Mapping dei tasti
+                switch (command) {
+                    case 'a':
                         GameManager.getInstance().moveCurrentPieceSx();
                         break;
-
-                    case ArrowRight:
+                    case 'd':
                         GameManager.getInstance().moveCurrentPieceDx();
                         break;
-
-                    case ArrowUp:
+                    case 'w':
                         GameManager.getInstance().rotateCurrentPiece();
                         break;
-
-                    case ArrowDown:
+                    case 's':
                         GameManager.getInstance().moveCurrentPieceDown();
                         break;
-
+                    case 'q': // Per uscire
+                        System.out.println("Uscita in corso...");
+                        System.exit(0);
+                        break;
                     default:
-                        shouldReprint = false;
+                        // Se l'utente preme un tasto non valido, non ristampare la griglia
+                        shouldReprintPlayground = false;
+                        break;
                 }
 
-                if (shouldReprint) {
+                // Se il pezzo si è mosso, forza la ristampa immediata del playground
+                if (shouldReprintPlayground) {
                     GameManager.getInstance().printPlayground();
                 }
             }
-
-            terminal.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
