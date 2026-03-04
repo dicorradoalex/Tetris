@@ -117,6 +117,5 @@ public class App {
 
         GameManager.getInstance().start();
 
-
     }
 }

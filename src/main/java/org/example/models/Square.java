@@ -24,7 +24,6 @@ public class Square extends Piece {
     public boolean canMoveDown() {
         char playground[][] = GameManager.getInstance().getPlayground();
 
-
         if (this.pivotX + 2 >= playground.length) {
             return false;
         }
@@ -40,97 +39,82 @@ public class Square extends Piece {
     public boolean canMoveSx() {
         char[][] playground = GameManager.getInstance().getPlayground();
 
-        // Controllo limite sinistro
-        if (pivotY - 1 < 0) {
+        // Controllo se siamo già al bordo sinistro
+        if (this.pivotY <= 0) {
             return false;
         }
 
-        // Controllo collisioni
-        if (playground[pivotX][pivotY - 1] != GameManager.CELLA_VUOTA) return false;
-        if (playground[pivotX + 1][pivotY - 1] != GameManager.CELLA_VUOTA) return false;
-
-        return true;
+        // Controllo collisioni a sinistra
+        if (playground[pivotX][pivotY - 1] == GameManager.CELLA_VUOTA && 
+            playground[pivotX + 1][pivotY - 1] == GameManager.CELLA_VUOTA) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean canMoveDx() {
         char[][] playground = GameManager.getInstance().getPlayground();
 
-        // Controllo limite destro
-        if (pivotY + 2 >= playground[0].length) {
+        // Controllo se siamo già al bordo destro
+        if (this.pivotY + 1 >= playground[0].length - 1) {
             return false;
         }
 
-        // Controllo collisioni
-        if (playground[pivotX][pivotY + 2] != GameManager.CELLA_VUOTA) return false;
-        if (playground[pivotX + 1][pivotY + 2] != GameManager.CELLA_VUOTA) return false;
-
-        return true;
+        // Controllo collisioni a destra
+        if (playground[pivotX][pivotY + 2] == GameManager.CELLA_VUOTA && 
+            playground[pivotX + 1][pivotY + 2] == GameManager.CELLA_VUOTA) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void rotate() {
-
+        // Il quadrato non ruota, quindi il metodo rimane vuoto
     }
 
     @Override
     public void moveDown() {
-
-        // Si dovrebbe fare refactoring come fatto in dropIntoPlayground (adesso è poco leggibile)
-
-        // rimuovi @
-        GameManager.getInstance().getPlayground()[pivotX][pivotY] = GameManager.CELLA_VUOTA;
-        GameManager.getInstance().getPlayground()[pivotX][pivotY + 1] = GameManager.CELLA_VUOTA;
-        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY] = GameManager.CELLA_VUOTA;
-        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY + 1] = GameManager.CELLA_VUOTA;
+        // Rimuovo le vecchie posizioni '@'
+        clearCurrentPosition();
 
         this.pivotX++;
 
-        // aggiorna @
-        GameManager.getInstance().getPlayground()[pivotX][pivotY] = GameManager.CELLA_PEZZO;
-        GameManager.getInstance().getPlayground()[pivotX][pivotY + 1] = GameManager.CELLA_PEZZO;
-        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY] = GameManager.CELLA_PEZZO;
-        GameManager.getInstance().getPlayground()[pivotX + 1][pivotY + 1] = GameManager.CELLA_PEZZO;
+        // Inserisco le nuove posizioni '@'
+        drawCurrentPosition();
     }
 
     @Override
     public void moveSx() {
-        if (!canMoveSx()) return;
-
-        char[][] playground = GameManager.getInstance().getPlayground();
-
-        // Rimuovo il pezzo dalla posizione attuale
-        playground[pivotX][pivotY] = GameManager.CELLA_VUOTA;
-        playground[pivotX][pivotY + 1] = GameManager.CELLA_VUOTA;
-        playground[pivotX + 1][pivotY] = GameManager.CELLA_VUOTA;
-        playground[pivotX + 1][pivotY + 1] = GameManager.CELLA_VUOTA;
-
-        // Aggiorno pivot
-        pivotY--;
-
-        // Riposiziono il pezzo
-        playground[pivotX][pivotY] = GameManager.CELLA_PEZZO;
-        playground[pivotX][pivotY + 1] = GameManager.CELLA_PEZZO;
-        playground[pivotX + 1][pivotY] = GameManager.CELLA_PEZZO;
-        playground[pivotX + 1][pivotY + 1] = GameManager.CELLA_PEZZO;
+        clearCurrentPosition();
+        this.pivotY--;
+        drawCurrentPosition();
     }
 
     @Override
     public void moveDx() {
-        if (!canMoveDx()) return;
+        clearCurrentPosition();
+        this.pivotY++;
+        drawCurrentPosition();
+    }
 
+    /**
+     * Pulisce le celle occupate dal pezzo corrente nel playground.
+     */
+    private void clearCurrentPosition() {
         char[][] playground = GameManager.getInstance().getPlayground();
-
-        // Rimuovo il pezzo dalla posizione attuale
         playground[pivotX][pivotY] = GameManager.CELLA_VUOTA;
         playground[pivotX][pivotY + 1] = GameManager.CELLA_VUOTA;
         playground[pivotX + 1][pivotY] = GameManager.CELLA_VUOTA;
         playground[pivotX + 1][pivotY + 1] = GameManager.CELLA_VUOTA;
+    }
 
-        // Aggiorno pivot
-        pivotY++;
-
-        // Riposiziono il pezzo
+    /**
+     * Disegna le celle del pezzo corrente nel playground.
+     */
+    private void drawCurrentPosition() {
+        char[][] playground = GameManager.getInstance().getPlayground();
         playground[pivotX][pivotY] = GameManager.CELLA_PEZZO;
         playground[pivotX][pivotY + 1] = GameManager.CELLA_PEZZO;
         playground[pivotX + 1][pivotY] = GameManager.CELLA_PEZZO;
