@@ -16,14 +16,18 @@ public class LeftS extends Piece {
         if (pivotX > 0) {
             switch (rotationStatus) {
                 case DEFAULT:
-                    return isEmptyTile(pivotX - 1, pivotY)
-                            && isEmptyTile(pivotX, pivotY - 1)
-                            && isEmptyTile(pivotX + 1, pivotY - 1);
+                    if (pivotY - 2 > 0) {
+                        return isEmptyTile(pivotX - 1, pivotY)
+                                && isEmptyTile(pivotX, pivotY - 1)
+                                && isEmptyTile(pivotX + 1, pivotY - 1);
+                    }
 
                 case UPWARD:
-                    return isEmptyTile(pivotX, pivotY - 1)
-                            && isEmptyTile(pivotX + 1, pivotY)
-                            && isEmptyTile(pivotX + 1, pivotY + 1);
+                    if (pivotY + 2 <= GameManager.getInstance().getPlayground()[0].length && pivotY - 1 >= 0) {
+                        return isEmptyTile(pivotX, pivotY - 1)
+                                && isEmptyTile(pivotX + 1, pivotY)
+                                && isEmptyTile(pivotX + 1, pivotY + 1);
+                    }
                 default:
                     return false;
             }
@@ -81,7 +85,7 @@ public class LeftS extends Piece {
                             && isEmptyTile(pivotX + 1, pivotY + 2);
                 }
             case UPWARD:
-                if (pivotY + 1 >= GameManager.getInstance().getPlayground()[0].length) {
+                if (pivotY + 1 < GameManager.getInstance().getPlayground()[0].length) {
                     return isEmptyTile(pivotX - 1, pivotY + 1)
                             && isEmptyTile(pivotX, pivotY + 1)
                             && isEmptyTile(pivotX + 1, pivotY);

@@ -20,9 +20,11 @@ public class RightS extends Piece {
                             && isEmptyTile(pivotX, pivotY + 1)
                             && isEmptyTile(pivotX + 1, pivotY + 1);
                 case UPWARD:
-                    return isEmptyTile(pivotX, pivotY + 1)
-                            && isEmptyTile(pivotX + 1, pivotY - 1)
-                            && isEmptyTile(pivotX + 1, pivotY);
+                    if (pivotY + 1 < GameManager.getInstance().getPlayground()[0].length && pivotY - 1 >= 0) {
+                        return isEmptyTile(pivotX, pivotY + 1)
+                                && isEmptyTile(pivotX + 1, pivotY - 1)
+                                && isEmptyTile(pivotX + 1, pivotY);
+                    }
                 default:
                     return false;
             }
